@@ -1,8 +1,13 @@
+// app/(tabs)/farm-records.tsx
 "use client";
 
+import { Calendar, IndianRupee, Leaf, Plus, X } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
   RefreshControl,
   ScrollView,
   Text,
@@ -10,33 +15,48 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { supabase } from "../../lib/supabase";
 
+type FarmRecord = {
+  id: string;
+  crop_id: string;
+  land_area: number;
+  input_cost: number;
+  yield: number;
+  revenue: number;
+  profit: number;
+  created_at: string;
+  crops: { name: string };
+};
+
 export default function FarmRecords() {
-  const [records, setRecords] = useState<any[]>([]);
+  const [records, setRecords] = useState<FarmRecord[]>([]);
   const [crops, setCrops] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [adding, setAdding] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [adding, setAdding] = useState(false);
 
-  // Form fields
+  // Form states
   const [cropId, setCropId] = useState("");
   const [land, setLand] = useState("");
   const [inputCost, setInputCost] = useState("");
   const [yieldKg, setYieldKg] = useState("");
-  const [marketPrice, setMarketPrice] = useState(0);
+  const [marketPrice, setMarketPrice] = useState("");
   const [revenue, setRevenue] = useState(0);
   const [profit, setProfit] = useState(0);
 
-  // Fetch crops + records
   const fetchData = async () => {
     setLoading(true);
-
-    const user = (await supabase.auth.getUser()).data.user;
-    if (!user) return;
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+      setLoading(false);
+      return;
+    }
 
     const { data: cropList } = await supabase.from("crops").select("*");
-
     const { data: farmList } = await supabase
       .from("farm_records")
       .select("*, crops(name)")
@@ -45,7 +65,6 @@ export default function FarmRecords() {
 
     setCrops(cropList || []);
     setRecords(farmList || []);
-
     setLoading(false);
   };
 
@@ -53,25 +72,31 @@ export default function FarmRecords() {
     fetchData();
   }, []);
 
-  const onRefresh = () => {
+  const onRefresh = async () => {
     setRefreshing(true);
-    fetchData().then(() => setRefreshing(false));
+    await fetchData();
+    setRefreshing(false);
   };
 
-  const calculateRevenueProfit = () => {
-    const rev = Number(yieldKg) * Number(marketPrice);
-    const prof = rev - Number(inputCost);
-
+  const calculateProfit = () => {
+    const cost = Number(inputCost) || 0;
+    const yieldAmount = Number(yieldKg) || 0;
+    const price = Number(marketPrice) || 0;
+    const rev = yieldAmount * price;
+    const prof = rev - cost;
     setRevenue(rev);
     setProfit(prof);
   };
 
   const handleAddRecord = async () => {
     if (!cropId || !land || !inputCost || !yieldKg) {
-      return alert("Please fill all fields");
+      Alert.alert("Missing Fields", "Please fill all required fields");
+      return;
     }
 
-    const user = (await supabase.auth.getUser()).data.user;
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user) return;
 
     const { error } = await supabase.from("farm_records").insert({
@@ -82,211 +107,349 @@ export default function FarmRecords() {
       yield: Number(yieldKg),
       revenue,
       profit,
-      season: "Current",
+      season: new Date().getFullYear().toString(),
     });
 
     if (error) {
-      alert("Failed to add record");
+      Alert.alert("Error", "Failed to save record. Try again.");
     } else {
-      alert("Record added successfully!");
+      Alert.alert("Success", "Farm record added successfully!");
       setAdding(false);
+      resetForm();
       fetchData();
     }
   };
 
-  if (loading)
+  const resetForm = () => {
+    setCropId("");
+    setLand("");
+    setInputCost("");
+    setYieldKg("");
+    setMarketPrice("");
+    setRevenue(0);
+    setProfit(0);
+  };
+
+  if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#2563eb" />
-      </View>
-    );
-
-  return (
-    <ScrollView
-      style={{ flex: 1, padding: 20 }}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-    >
-      <Text style={{ fontSize: 26, fontWeight: "bold", marginBottom: 20 }}>
-        📘 Farm Records
-      </Text>
-
-      {/* Add New Record Button */}
-      <TouchableOpacity
-        onPress={() => setAdding(!adding)}
+      <SafeAreaView
         style={{
-          backgroundColor: adding ? "#ef4444" : "#2563eb",
-          padding: 14,
-          borderRadius: 8,
+          flex: 1,
+          backgroundColor: "#f8fafc",
+          justifyContent: "center",
           alignItems: "center",
-          marginBottom: 20,
         }}
       >
-        <Text style={{ color: "white", fontSize: 16 }}>
-          {adding ? "Cancel" : "+ Add New Record"}
+        <ActivityIndicator size="large" color="#16a34a" />
+        <Text style={{ marginTop: 16, fontSize: 16, color: "#64748b" }}>
+          Loading your farm records...
         </Text>
-      </TouchableOpacity>
+      </SafeAreaView>
+    );
+  }
 
-      {/* Add Form */}
-      {adding && (
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#f0fdf4" }}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        {/* Header */}
         <View
-          style={{
-            padding: 20,
-            backgroundColor: "white",
-            borderRadius: 12,
-            elevation: 3,
-            marginBottom: 25,
-          }}
+          style={{ backgroundColor: "#16a34a", padding: 20, paddingTop: 10 }}
         >
-          <Text style={{ fontSize: 20, fontWeight: "600", marginBottom: 10 }}>
-            Add Farm Record
-          </Text>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
+            <Leaf size={32} color="white" />
+            <View>
+              <Text style={{ fontSize: 24, fontWeight: "800", color: "white" }}>
+                मेरे खेत के रिकॉर्ड
+              </Text>
+              <Text style={{ color: "#dcfce7", fontSize: 15 }}>
+                सभी फसलों का हिसाब-किताब
+              </Text>
+            </View>
+          </View>
+        </View>
 
-          {/* Crop */}
-          <Text style={{ marginBottom: 6 }}>Crop *</Text>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={{ marginBottom: 15 }}
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={["#16a34a"]}
+            />
+          }
+          style={{ flex: 1, padding: 16 }}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Add Button */}
+          <TouchableOpacity
+            onPress={() => setAdding(!adding)}
+            style={{
+              backgroundColor: adding ? "#dc2626" : "#15803d",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: 16,
+              borderRadius: 16,
+              gap: 10,
+              marginBottom: 20,
+              elevation: 4,
+              shadowColor: "#000",
+              shadowOpacity: 0.1,
+              shadowRadius: 8,
+              shadowOffset: { width: 0, height: 4 },
+            }}
           >
-            {crops.map((c) => (
-              <TouchableOpacity
-                key={c.id}
-                onPress={() => setCropId(c.id)}
+            {adding ? (
+              <X size={24} color="white" />
+            ) : (
+              <Plus size={24} color="white" />
+            )}
+            <Text style={{ color: "white", fontSize: 18, fontWeight: "600" }}>
+              {adding ? "Cancel" : "नया रिकॉर्ड जोड़ें"}
+            </Text>
+          </TouchableOpacity>
+
+          {/* Add Form */}
+          {adding && (
+            <View
+              style={{
+                backgroundColor: "white",
+                borderRadius: 20,
+                padding: 20,
+                marginBottom: 24,
+                elevation: 6,
+                shadowColor: "#000",
+                shadowOpacity: 0.12,
+                shadowRadius: 10,
+              }}
+            >
+              <Text
                 style={{
-                  paddingVertical: 10,
-                  paddingHorizontal: 16,
-                  backgroundColor: cropId === c.id ? "#2563eb" : "#e2e8f0",
-                  borderRadius: 8,
-                  marginRight: 10,
+                  fontSize: 20,
+                  fontWeight: "700",
+                  color: "#166534",
+                  marginBottom: 16,
                 }}
               >
-                <Text style={{ color: cropId === c.id ? "white" : "black" }}>
-                  {c.name}
+                नई फसल का रिकॉर्ड
+              </Text>
+
+              {/* Crop Selection */}
+              <Text
+                style={{ fontWeight: "600", marginBottom: 8, color: "#374151" }}
+              >
+                फसल चुनें
+              </Text>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={{ marginBottom: 16 }}
+              >
+                {crops.map((crop) => (
+                  <TouchableOpacity
+                    key={crop.id}
+                    onPress={() => setCropId(crop.id)}
+                    style={{
+                      paddingHorizontal: 20,
+                      paddingVertical: 12,
+                      backgroundColor:
+                        cropId === crop.id ? "#16a34a" : "#f1f5f9",
+                      borderRadius: 30,
+                      marginRight: 10,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: cropId === crop.id ? "white" : "#374151",
+                        fontWeight: "600",
+                      }}
+                    >
+                      {crop.name}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+
+              <TextInput
+                placeholder="जमीन (एकड़ में)"
+                keyboardType="numeric"
+                value={land}
+                onChangeText={setLand}
+                style={styles.input}
+              />
+              <TextInput
+                placeholder="खर्चा (₹)"
+                keyboardType="numeric"
+                value={inputCost}
+                onChangeText={setInputCost}
+                style={styles.input}
+              />
+              <TextInput
+                placeholder="उत्पादन (किलो में)"
+                keyboardType="numeric"
+                value={yieldKg}
+                onChangeText={setYieldKg}
+                style={styles.input}
+              />
+              <TextInput
+                placeholder="बाजार भाव (₹ प्रति किलो) - वैकल्पिक"
+                keyboardType="numeric"
+                value={marketPrice}
+                onChangeText={setMarketPrice}
+                onBlur={calculateProfit}
+                style={styles.input}
+              />
+
+              {/* Results */}
+              <View
+                style={{
+                  backgroundColor: "#f0fdf4",
+                  padding: 16,
+                  borderRadius: 12,
+                  marginTop: 12,
+                }}
+              >
+                <Text style={{ fontSize: 16, color: "#166534" }}>
+                  <IndianRupee size={18} color="#166534" /> कुल आय: ₹
+                  {revenue.toLocaleString("en-IN")}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 18,
+                    fontWeight: "700",
+                    color: profit >= 0 ? "#16a34a" : "#dc2626",
+                    marginTop: 8,
+                  }}
+                >
+                  {profit >= 0 ? "लाभ" : "नुकसान"}: ₹
+                  {Math.abs(profit).toLocaleString("en-IN")}
+                </Text>
+              </View>
+
+              <TouchableOpacity
+                onPress={handleAddRecord}
+                style={{
+                  backgroundColor: "#16a34a",
+                  padding: 16,
+                  borderRadius: 16,
+                  alignItems: "center",
+                  marginTop: 20,
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  gap: 10,
+                }}
+              >
+                <Leaf size={22} color="white" />
+                <Text
+                  style={{ color: "white", fontSize: 18, fontWeight: "600" }}
+                >
+                  रिकॉर्ड सेव करें
                 </Text>
               </TouchableOpacity>
-            ))}
-          </ScrollView>
+            </View>
+          )}
 
-          <Text>Land Area (Acres) *</Text>
-          <TextInput
-            placeholder="e.g. 2.5"
-            keyboardType="numeric"
-            value={land}
-            onChangeText={setLand}
-            style={{
-              borderWidth: 1,
-              padding: 10,
-              borderRadius: 8,
-              marginBottom: 10,
-            }}
-          />
+          {/* Records List */}
+          {records.length === 0 ? (
+            <View style={{ alignItems: "center", marginTop: 50 }}>
+              <Text style={{ fontSize: 18, color: "#94a3b8" }}>
+                कोई रिकॉर्ड नहीं मिला
+              </Text>
+              <Text style={{ color: "#94a3b8", marginTop: 8 }}>
+                ऊपर बटन दबाकर नया रिकॉर्ड जोड़ें
+              </Text>
+            </View>
+          ) : (
+            records.map((r) => (
+              <View
+                key={r.id}
+                style={{
+                  backgroundColor: "white",
+                  borderRadius: 18,
+                  padding: 18,
+                  marginBottom: 16,
+                  elevation: 4,
+                  shadowColor: "#000",
+                  shadowOpacity: 0.08,
+                  shadowRadius: 8,
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 22,
+                      fontWeight: "800",
+                      color: "#166534",
+                    }}
+                  >
+                    {r.crops?.name}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      fontWeight: "700",
+                      color: r.profit >= 0 ? "#16a34a" : "#dc2626",
+                    }}
+                  >
+                    ₹{Math.abs(r.profit).toLocaleString("en-IN")}{" "}
+                    {r.profit >= 0 ? "लाभ" : "नुकसान"}
+                  </Text>
+                </View>
 
-          <Text>Input Cost (₹) *</Text>
-          <TextInput
-            placeholder="Enter cost"
-            keyboardType="numeric"
-            value={inputCost}
-            onChangeText={setInputCost}
-            style={{
-              borderWidth: 1,
-              padding: 10,
-              borderRadius: 8,
-              marginBottom: 10,
-            }}
-          />
+                <View style={{ marginTop: 12, gap: 6 }}>
+                  <Text style={{ color: "#475569" }}>
+                    जमीन: {r.land_area} एकड़
+                  </Text>
+                  <Text style={{ color: "#475569" }}>
+                    उत्पादन: {r.yield} किलो
+                  </Text>
+                  <Text style={{ color: "#475569" }}>
+                    खर्च: ₹{r.input_cost.toLocaleString("en-IN")}
+                  </Text>
+                  <Text style={{ color: "#475569" }}>
+                    आय: ₹{r.revenue.toLocaleString("en-IN")}
+                  </Text>
+                </View>
 
-          <Text>Yield (kg) *</Text>
-          <TextInput
-            placeholder="Enter yield"
-            keyboardType="numeric"
-            value={yieldKg}
-            onChangeText={setYieldKg}
-            style={{
-              borderWidth: 1,
-              padding: 10,
-              borderRadius: 8,
-              marginBottom: 10,
-            }}
-          />
-
-          {/* Market Price */}
-          <Text>Market Price (₹ per kg)</Text>
-          <TextInput
-            placeholder="Optional"
-            keyboardType="numeric"
-            value={String(marketPrice)}
-            onChangeText={(v) => setMarketPrice(Number(v))}
-            onBlur={calculateRevenueProfit}
-            style={{
-              borderWidth: 1,
-              padding: 10,
-              borderRadius: 8,
-              marginBottom: 10,
-            }}
-          />
-
-          <Text style={{ marginTop: 10 }}>Revenue: ₹{revenue}</Text>
-          <Text>Profit: ₹{profit}</Text>
-
-          <TouchableOpacity
-            onPress={handleAddRecord}
-            style={{
-              backgroundColor: "#16a34a",
-              padding: 14,
-              borderRadius: 8,
-              alignItems: "center",
-              marginTop: 20,
-            }}
-          >
-            <Text style={{ color: "white", fontSize: 16 }}>Save Record</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-
-      {/* Records List */}
-      {records.map((r) => (
-        <View
-          key={r.id}
-          style={{
-            padding: 18,
-            backgroundColor: "white",
-            borderRadius: 12,
-            elevation: 3,
-            marginBottom: 15,
-          }}
-        >
-          <Text style={{ fontSize: 20, fontWeight: "600" }}>
-            {r.crops?.name}
-          </Text>
-
-          <Text style={{ marginTop: 6 }}>Land: {r.land_area} acres</Text>
-          <Text>Yield: {r.yield} kg</Text>
-          <Text>Input Cost: ₹{r.input_cost}</Text>
-          <Text>Revenue: ₹{r.revenue}</Text>
-
-          <Text
-            style={{
-              marginTop: 6,
-              fontWeight: "600",
-              color: r.profit >= 0 ? "#16a34a" : "#dc2626",
-            }}
-          >
-            Profit: ₹{r.profit}
-          </Text>
-
-          <Text style={{ marginTop: 6, color: "gray" }}>
-            {String(r.created_at).substring(0, 10)}
-          </Text>
-        </View>
-      ))}
-
-      {records.length === 0 && (
-        <Text style={{ textAlign: "center", marginTop: 20, color: "gray" }}>
-          No farm records found.
-        </Text>
-      )}
-    </ScrollView>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginTop: 12,
+                    gap: 6,
+                  }}
+                >
+                  <Calendar size={16} color="#94a3b8" />
+                  <Text style={{ color: "#94a3b8", fontSize: 13 }}>
+                    {new Date(r.created_at).toLocaleDateString("hi-IN")}
+                  </Text>
+                </View>
+              </View>
+            ))
+          )}
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
+
+// Reusable input style
+const styles = {
+  input: {
+    borderWidth: 1.5,
+    borderColor: "#cbd5e1",
+    borderRadius: 12,
+    padding: 14,
+    fontSize: 16,
+    backgroundColor: "#fdfdfe",
+    marginBottom: 12,
+  },
+};

@@ -259,7 +259,10 @@ export default function Login() {
             <Text style={{ color: "#64748b", fontSize: 14 }}>
               Dont have an account?
             </Text>
-            <TouchableOpacity activeOpacity={0.7}>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => router.push("/(auth)/signup" as Href)}
+            >
               <Text
                 style={{
                   color: "#2563eb",
