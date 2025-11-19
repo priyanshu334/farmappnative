@@ -1,12 +1,5 @@
 "use client";
 
-import {
-  CloudRain,
-  Droplet,
-  MapPin,
-  Sprout,
-  Thermometer,
-} from "lucide-react-native";
 import { useState } from "react";
 import {
   ActivityIndicator,
@@ -33,7 +26,7 @@ export default function CropRecommendation() {
 
   const handleRecommend = async () => {
     if (!soil || !water || !land) {
-      Alert.alert("Missing Information", "Please fill all required fields");
+      Alert.alert("जानकारी अधूरी है", "कृपया सभी अनिवार्य जानकारी भरें।");
       return;
     }
 
@@ -58,7 +51,7 @@ export default function CropRecommendation() {
       const data = await response.json();
       setResult(data);
     } catch (error) {
-      Alert.alert("Error", "Something went wrong! Please try again.");
+      Alert.alert("त्रुटि", "कुछ गलत हो गया। कृपया दोबारा कोशिश करें।");
     }
 
     setLoading(false);
@@ -66,7 +59,7 @@ export default function CropRecommendation() {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, backgroundColor: "#f8fafc" }}
+      style={{ flex: 1, backgroundColor: "#e8f4e5" }}
       edges={["top"]}
     >
       <KeyboardAvoidingView
@@ -75,430 +68,222 @@ export default function CropRecommendation() {
       >
         <ScrollView
           style={{ flex: 1 }}
-          contentContainerStyle={{ padding: 20, paddingBottom: 40 }}
+          contentContainerStyle={{ padding: 16 }}
           showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
         >
           {/* Header */}
-          <View style={{ marginBottom: 24 }}>
-            <Text
-              style={{
-                fontSize: 28,
-                fontWeight: "bold",
-                color: "#1e293b",
-                marginBottom: 6,
-              }}
-            >
-              🌾 AI Crop Recommendation
-            </Text>
-            <Text style={{ fontSize: 15, color: "#64748b", lineHeight: 22 }}>
-              Get personalized crop suggestions based on your farm conditions
-            </Text>
-          </View>
-
-          {/* Form Card */}
-          <View
+          <Text
             style={{
-              backgroundColor: "white",
-              borderRadius: 16,
-              padding: 20,
-              marginBottom: 20,
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.08,
-              shadowRadius: 12,
-              elevation: 4,
-              borderWidth: 1,
-              borderColor: "#e2e8f0",
+              fontSize: 24,
+              fontWeight: "700",
+              marginBottom: 16,
+              color: "#4b3d16",
             }}
           >
-            {/* Soil Type */}
-            <View style={{ marginBottom: 18 }}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginBottom: 8,
-                }}
-              >
-                <MapPin size={18} color="#64748b" />
-                <Text
-                  style={{
-                    marginLeft: 8,
-                    fontSize: 15,
-                    fontWeight: "600",
-                    color: "#334155",
-                  }}
-                >
-                  Soil Type <Text style={{ color: "#ef4444" }}>*</Text>
-                </Text>
-              </View>
-              <TextInput
-                placeholder="e.g., Black, Red, Clay, Sandy"
-                placeholderTextColor="#94a3b8"
-                value={soil}
-                onChangeText={setSoil}
-                style={{
-                  borderWidth: 1.5,
-                  borderColor: soil ? "#2563eb" : "#e2e8f0",
-                  padding: 14,
-                  borderRadius: 12,
-                  fontSize: 15,
-                  color: "#1e293b",
-                  backgroundColor: "#f8fafc",
-                }}
-              />
-            </View>
+            🌾 फसल सुझाव (AI Based)
+          </Text>
+          <Text style={{ fontSize: 14, marginBottom: 12, color: "#4a4a4a" }}>
+            अपनी खेत की स्थिति बताएँ और उचित फसल का सुझाव पाएं।
+          </Text>
 
-            {/* Water Availability */}
-            <View style={{ marginBottom: 18 }}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginBottom: 8,
-                }}
-              >
-                <Droplet size={18} color="#64748b" />
-                <Text
+          {/* Soil Type */}
+          <View style={{ marginBottom: 16 }}>
+            <Text
+              style={{ fontWeight: "700", marginBottom: 6, color: "#4b3d16" }}
+            >
+              मिट्टी का प्रकार *
+            </Text>
+            <TextInput
+              placeholder="जैसे – काली, लाल, दोमट, रेतीली…"
+              value={soil}
+              onChangeText={setSoil}
+              style={{
+                borderWidth: 1,
+                borderColor: "#97b98a",
+                backgroundColor: "#ffffff",
+                padding: 12,
+                borderRadius: 10,
+                color: "#333",
+              }}
+            />
+          </View>
+
+          {/* Water Availability */}
+          <View style={{ marginBottom: 16 }}>
+            <Text
+              style={{ fontWeight: "700", marginBottom: 6, color: "#4b3d16" }}
+            >
+              पानी की उपलब्धता *
+            </Text>
+            <View style={{ flexDirection: "row", gap: 10 }}>
+              {["कम", "मध्यम", "ज्यादा"].map((level) => (
+                <TouchableOpacity
+                  key={level}
+                  onPress={() => setWater(level)}
                   style={{
-                    marginLeft: 8,
-                    fontSize: 15,
-                    fontWeight: "600",
-                    color: "#334155",
+                    flex: 1,
+                    paddingVertical: 10,
+                    borderWidth: 2,
+                    borderColor: water === level ? "#4c8a3f" : "#b1c9a7",
+                    borderRadius: 10,
+                    backgroundColor: water === level ? "#e5f6df" : "#fafcf8",
+                    alignItems: "center",
                   }}
                 >
-                  Water Availability <Text style={{ color: "#ef4444" }}>*</Text>
-                </Text>
-              </View>
-              <View style={{ flexDirection: "row", gap: 10 }}>
-                {["Low", "Medium", "High"].map((level) => (
-                  <TouchableOpacity
-                    key={level}
-                    onPress={() => setWater(level)}
+                  <Text
                     style={{
-                      flex: 1,
-                      paddingVertical: 12,
-                      paddingHorizontal: 16,
-                      borderRadius: 12,
-                      borderWidth: 1.5,
-                      borderColor: water === level ? "#2563eb" : "#e2e8f0",
-                      backgroundColor: water === level ? "#eff6ff" : "#f8fafc",
-                      alignItems: "center",
+                      color: water === level ? "#2f5e25" : "#4a4a4a",
+                      fontWeight: water === level ? "700" : "500",
                     }}
                   >
-                    <Text
-                      style={{
-                        fontSize: 14,
-                        fontWeight: water === level ? "700" : "600",
-                        color: water === level ? "#2563eb" : "#64748b",
-                      }}
-                    >
-                      {level}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </View>
-
-            {/* Land Area */}
-            <View style={{ marginBottom: 18 }}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginBottom: 8,
-                }}
-              >
-                <Sprout size={18} color="#64748b" />
-                <Text
-                  style={{
-                    marginLeft: 8,
-                    fontSize: 15,
-                    fontWeight: "600",
-                    color: "#334155",
-                  }}
-                >
-                  Land Area (Acres) <Text style={{ color: "#ef4444" }}>*</Text>
-                </Text>
-              </View>
-              <TextInput
-                placeholder="e.g., 2.5"
-                placeholderTextColor="#94a3b8"
-                value={land}
-                onChangeText={setLand}
-                keyboardType="decimal-pad"
-                style={{
-                  borderWidth: 1.5,
-                  borderColor: land ? "#2563eb" : "#e2e8f0",
-                  padding: 14,
-                  borderRadius: 12,
-                  fontSize: 15,
-                  color: "#1e293b",
-                  backgroundColor: "#f8fafc",
-                }}
-              />
-            </View>
-
-            {/* Temperature */}
-            <View style={{ marginBottom: 18 }}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginBottom: 8,
-                }}
-              >
-                <Thermometer size={18} color="#64748b" />
-                <Text
-                  style={{
-                    marginLeft: 8,
-                    fontSize: 15,
-                    fontWeight: "600",
-                    color: "#334155",
-                  }}
-                >
-                  Temperature (°C){" "}
-                  <Text style={{ color: "#94a3b8", fontSize: 13 }}>
-                    Optional
+                    {level}
                   </Text>
-                </Text>
-              </View>
-              <TextInput
-                placeholder="e.g., 28"
-                placeholderTextColor="#94a3b8"
-                value={temperature}
-                onChangeText={setTemperature}
-                keyboardType="decimal-pad"
-                style={{
-                  borderWidth: 1.5,
-                  borderColor: temperature ? "#2563eb" : "#e2e8f0",
-                  padding: 14,
-                  borderRadius: 12,
-                  fontSize: 15,
-                  color: "#1e293b",
-                  backgroundColor: "#f8fafc",
-                }}
-              />
+                </TouchableOpacity>
+              ))}
             </View>
+          </View>
 
-            {/* Rainfall */}
-            <View style={{ marginBottom: 0 }}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginBottom: 8,
-                }}
-              >
-                <CloudRain size={18} color="#64748b" />
-                <Text
-                  style={{
-                    marginLeft: 8,
-                    fontSize: 15,
-                    fontWeight: "600",
-                    color: "#334155",
-                  }}
-                >
-                  Rainfall (mm){" "}
-                  <Text style={{ color: "#94a3b8", fontSize: 13 }}>
-                    Optional
-                  </Text>
-                </Text>
-              </View>
-              <TextInput
-                placeholder="e.g., 800"
-                placeholderTextColor="#94a3b8"
-                value={rainfall}
-                onChangeText={setRainfall}
-                keyboardType="decimal-pad"
-                style={{
-                  borderWidth: 1.5,
-                  borderColor: rainfall ? "#2563eb" : "#e2e8f0",
-                  padding: 14,
-                  borderRadius: 12,
-                  fontSize: 15,
-                  color: "#1e293b",
-                  backgroundColor: "#f8fafc",
-                }}
-              />
-            </View>
+          {/* Land Area */}
+          <View style={{ marginBottom: 16 }}>
+            <Text
+              style={{ fontWeight: "700", marginBottom: 6, color: "#4b3d16" }}
+            >
+              जमीन (एकड़) *
+            </Text>
+            <TextInput
+              placeholder="जैसे – 2.5"
+              value={land}
+              onChangeText={setLand}
+              keyboardType="decimal-pad"
+              style={{
+                borderWidth: 1,
+                borderColor: "#97b98a",
+                backgroundColor: "#ffffff",
+                padding: 12,
+                borderRadius: 10,
+                color: "#333",
+              }}
+            />
+          </View>
+
+          {/* Temperature */}
+          <View style={{ marginBottom: 16 }}>
+            <Text
+              style={{ fontWeight: "700", marginBottom: 6, color: "#4b3d16" }}
+            >
+              तापमान (°C) – वैकल्पिक
+            </Text>
+            <TextInput
+              placeholder="जैसे – 28"
+              value={temperature}
+              onChangeText={setTemperature}
+              keyboardType="decimal-pad"
+              style={{
+                borderWidth: 1,
+                borderColor: "#97b98a",
+                backgroundColor: "#ffffff",
+                padding: 12,
+                borderRadius: 10,
+                color: "#333",
+              }}
+            />
+          </View>
+
+          {/* Rainfall */}
+          <View style={{ marginBottom: 16 }}>
+            <Text
+              style={{ fontWeight: "700", marginBottom: 6, color: "#4b3d16" }}
+            >
+              वर्षा (mm) – वैकल्पिक
+            </Text>
+            <TextInput
+              placeholder="जैसे – 800"
+              value={rainfall}
+              onChangeText={setRainfall}
+              keyboardType="decimal-pad"
+              style={{
+                borderWidth: 1,
+                borderColor: "#97b98a",
+                backgroundColor: "#ffffff",
+                padding: 12,
+                borderRadius: 10,
+                color: "#333",
+              }}
+            />
           </View>
 
           {/* Submit Button */}
           <TouchableOpacity
             onPress={handleRecommend}
             disabled={loading}
-            activeOpacity={0.8}
             style={{
-              backgroundColor: loading ? "#94a3b8" : "#2563eb",
-              padding: 16,
-              borderRadius: 14,
+              backgroundColor: loading ? "#8b9b85" : "#4c8a3f",
+              padding: 14,
+              borderRadius: 10,
               alignItems: "center",
               marginBottom: 20,
-              shadowColor: "#2563eb",
-              shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: 0.3,
-              shadowRadius: 8,
-              elevation: 6,
             }}
           >
             {loading ? (
-              <ActivityIndicator color="white" size="small" />
+              <ActivityIndicator color="#fff" size="small" />
             ) : (
-              <Text style={{ color: "white", fontSize: 17, fontWeight: "700" }}>
-                Get Recommendations
+              <Text style={{ color: "#fff", fontSize: 16, fontWeight: "700" }}>
+                सुझाव देखें
               </Text>
             )}
           </TouchableOpacity>
 
-          {/* Display Result */}
+          {/* Result */}
           {result && (
             <View
               style={{
-                backgroundColor: "white",
-                borderRadius: 16,
-                padding: 20,
-                shadowColor: "#000",
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.08,
-                shadowRadius: 12,
-                elevation: 4,
-                borderWidth: 1,
-                borderColor: "#e2e8f0",
+                padding: 12,
+                borderWidth: 2,
+                borderRadius: 12,
+                borderColor: "#b79b65",
+                backgroundColor: "#fff8e7",
               }}
             >
               <Text
                 style={{
-                  fontSize: 22,
-                  fontWeight: "bold",
-                  marginBottom: 16,
-                  color: "#1e293b",
+                  fontSize: 18,
+                  fontWeight: "700",
+                  marginBottom: 10,
+                  color: "#4b3d16",
                 }}
               >
-                🌱 Recommended Crops
+                🌱 सुझाई गई फसलें
               </Text>
 
               {result.recommendations?.map((crop: any, idx: number) => (
                 <View
                   key={idx}
                   style={{
-                    padding: 16,
-                    backgroundColor: "#f8fafc",
-                    borderRadius: 12,
-                    marginBottom: 12,
-                    borderWidth: 1,
-                    borderColor: "#e2e8f0",
+                    padding: 10,
+                    borderBottomWidth:
+                      idx === result.recommendations.length - 1 ? 0 : 1,
+                    borderColor: "#d8c59c",
                   }}
                 >
-                  <View
+                  <Text
                     style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      marginBottom: 10,
+                      fontWeight: "700",
+                      marginBottom: 6,
+                      color: "#2f5e25",
                     }}
                   >
-                    <View
-                      style={{
-                        width: 32,
-                        height: 32,
-                        borderRadius: 16,
-                        backgroundColor: "#2563eb",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        marginRight: 12,
-                      }}
-                    >
-                      <Text
-                        style={{
-                          color: "white",
-                          fontWeight: "bold",
-                          fontSize: 16,
-                        }}
-                      >
-                        {idx + 1}
-                      </Text>
-                    </View>
-                    <Text
-                      style={{
-                        fontSize: 18,
-                        fontWeight: "700",
-                        color: "#1e293b",
-                        flex: 1,
-                      }}
-                    >
-                      {crop.name}
-                    </Text>
-                  </View>
+                    {idx + 1}. {crop.name}
+                  </Text>
 
-                  <View style={{ gap: 6 }}>
-                    <View style={{ flexDirection: "row" }}>
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          color: "#64748b",
-                          fontWeight: "600",
-                          width: 80,
-                        }}
-                      >
-                        Profit:
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          color: "#16a34a",
-                          fontWeight: "700",
-                        }}
-                      >
-                        ₹{crop.profit}
-                      </Text>
-                    </View>
-
-                    <View style={{ flexDirection: "row" }}>
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          color: "#64748b",
-                          fontWeight: "600",
-                          width: 80,
-                        }}
-                      >
-                        Yield:
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          color: "#334155",
-                          fontWeight: "600",
-                        }}
-                      >
-                        {crop.yield} kg
-                      </Text>
-                    </View>
-
-                    <View style={{ flexDirection: "row", marginTop: 4 }}>
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          color: "#64748b",
-                          fontWeight: "600",
-                          width: 80,
-                        }}
-                      >
-                        Reason:
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          color: "#334155",
-                          flex: 1,
-                          lineHeight: 20,
-                        }}
-                      >
-                        {crop.reason}
-                      </Text>
-                    </View>
-                  </View>
+                  <Text style={{ color: "#4a4a4a" }}>
+                    • लाभ: ₹{crop.profit}
+                  </Text>
+                  <Text style={{ color: "#4a4a4a" }}>
+                    • उत्पादन: {crop.yield} किलो
+                  </Text>
+                  <Text style={{ color: "#4a4a4a" }}>
+                    • कारण: {crop.reason}
+                  </Text>
                 </View>
               ))}
             </View>

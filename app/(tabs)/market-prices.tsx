@@ -26,7 +26,7 @@ export default function MarketPrices() {
     if (!error) {
       setPrices(data);
     } else {
-      alert("Failed to load market prices");
+      alert("❗ बाज़ार भाव लोड करने में परेशानी हुई");
     }
 
     setLoading(false);
@@ -44,55 +44,85 @@ export default function MarketPrices() {
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#2563eb" />
+        <ActivityIndicator size="large" color="#16a34a" />
       </View>
     );
   }
 
   return (
     <ScrollView
-      style={{ flex: 1, padding: 20 }}
+      style={{ flex: 1, padding: 20, backgroundColor: "#f8fafc" }}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
-      <Text style={{ fontSize: 26, fontWeight: "bold", marginBottom: 20 }}>
-        💹 Market Prices Today
+      {/* Heading */}
+      <Text
+        style={{
+          fontSize: 28,
+          fontWeight: "bold",
+          marginBottom: 12,
+          color: "#1e293b",
+        }}
+      >
+        💹 आज के मंडी भाव
+      </Text>
+      <Text style={{ color: "#475569", marginBottom: 22, fontSize: 15 }}>
+        ताज़ा बाजार रेट सीधे मंडी से 📊
       </Text>
 
+      {/* Content */}
       {prices.map((item) => (
         <View
           key={item.id}
           style={{
             padding: 18,
             backgroundColor: "white",
-            elevation: 3,
             borderRadius: 12,
             marginBottom: 15,
+            borderWidth: 1,
+            borderColor: "#e2e8f0",
+            shadowColor: "#000",
+            shadowOpacity: 0.05,
+            shadowRadius: 6,
+            elevation: 2,
           }}
         >
-          <Text style={{ fontSize: 20, fontWeight: "600" }}>
-            {item.crop_name}
+          {/* Crop Name */}
+          <Text style={{ fontSize: 20, fontWeight: "700", color: "#1e293b" }}>
+            🌾 {item.crop_name}
           </Text>
 
-          <Text style={{ marginTop: 4, fontSize: 16 }}>
-            Price:{" "}
-            <Text style={{ fontWeight: "bold" }}>₹{item.price_per_kg}/kg</Text>
+          {/* Price */}
+          <Text style={{ marginTop: 6, fontSize: 16, color: "#475569" }}>
+            भाव:{" "}
+            <Text style={{ fontWeight: "bold", color: "#0f172a" }}>
+              ₹{item.price_per_kg}/kg
+            </Text>
           </Text>
 
-          <Text style={{ marginTop: 2, fontSize: 14, color: "gray" }}>
-            Market: {item.market_name}
+          {/* Market */}
+          <Text style={{ marginTop: 4, fontSize: 14, color: "#64748b" }}>
+            मंडी: {item.market_name}
           </Text>
 
-          <Text style={{ marginTop: 4, fontSize: 13, color: "gray" }}>
-            Updated: {String(item.created_at).substring(0, 10)}
+          {/* Date */}
+          <Text style={{ marginTop: 6, fontSize: 12, color: "#94a3b8" }}>
+            अपडेट: {String(item.created_at).substring(0, 10)}
           </Text>
         </View>
       ))}
 
       {prices.length === 0 && (
-        <Text style={{ marginTop: 20, textAlign: "center", color: "gray" }}>
-          No market prices found.
+        <Text
+          style={{
+            marginTop: 20,
+            textAlign: "center",
+            color: "#64748b",
+            fontSize: 15,
+          }}
+        >
+          ❗ कोई मंडी भाव उपलब्ध नहीं है।
         </Text>
       )}
     </ScrollView>

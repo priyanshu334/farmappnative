@@ -28,7 +28,7 @@ export default function SchemesPage() {
     if (!error) {
       setSchemes(data);
     } else {
-      alert("Failed to fetch schemes");
+      alert("योजनाएँ लोड नहीं हो सकीं");
     }
 
     setLoading(false);
@@ -46,56 +46,96 @@ export default function SchemesPage() {
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#2563eb" />
+        <ActivityIndicator size="large" color="#6B8E23" />
       </View>
     );
   }
 
   return (
     <ScrollView
-      style={{ flex: 1, padding: 20 }}
+      style={{
+        flex: 1,
+        padding: 20,
+        backgroundColor: "#fdf8e8", // warm crop field tone
+      }}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
-      <Text style={{ fontSize: 26, fontWeight: "bold", marginBottom: 20 }}>
-        🏛 Government Schemes
+      {/* Heading */}
+      <Text
+        style={{
+          fontSize: 28,
+          fontWeight: "800",
+          marginBottom: 20,
+          color: "#4a3b15",
+        }}
+      >
+        🌾 सरकारी योजनाएँ
       </Text>
 
+      {/* Schemes List */}
       {schemes.map((s) => (
         <TouchableOpacity
           key={s.id}
           onPress={() => router.push(`/scheme-details?id=${s.id}` as Href)}
           style={{
+            backgroundColor: "#ffffff",
+            borderRadius: 16,
             padding: 18,
-            backgroundColor: "white",
-            elevation: 3,
-            borderRadius: 12,
             marginBottom: 15,
+            borderWidth: 1,
+            borderColor: "#d2c7a4",
+            shadowColor: "#000",
+            shadowOpacity: 0.15,
+            shadowRadius: 5,
+            elevation: 3,
           }}
         >
-          <Text style={{ fontSize: 20, fontWeight: "600" }}>{s.title}</Text>
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: "700",
+              color: "#3b2f0b",
+            }}
+          >
+            {s.title}
+          </Text>
 
-          <Text style={{ marginTop: 6, color: "gray" }}>
+          <Text
+            style={{
+              marginTop: 6,
+              color: "#766f61",
+              fontSize: 15,
+            }}
+          >
             {s.short_description}
           </Text>
 
           <Text
             style={{
               marginTop: 10,
-              fontSize: 14,
-              fontWeight: "500",
-              color: "#2563eb",
+              fontSize: 15,
+              fontWeight: "600",
+              color: "#6B8E23",
             }}
           >
-            View Details →
+            विस्तार से देखें →
           </Text>
         </TouchableOpacity>
       ))}
 
+      {/* Empty State */}
       {schemes.length === 0 && (
-        <Text style={{ marginTop: 20, textAlign: "center", color: "gray" }}>
-          No schemes found.
+        <Text
+          style={{
+            marginTop: 40,
+            textAlign: "center",
+            color: "#6b6b6b",
+            fontSize: 16,
+          }}
+        >
+          कोई योजना उपलब्ध नहीं है।
         </Text>
       )}
     </ScrollView>

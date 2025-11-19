@@ -33,60 +33,128 @@ export default function SchemeDetails() {
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#2563eb" />
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fdf8e8",
+        }}
+      >
+        <ActivityIndicator size="large" color="#6B8E23" />
       </View>
     );
   }
 
   if (!scheme)
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text>No scheme found.</Text>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fdf8e8",
+        }}
+      >
+        <Text style={{ color: "#6b6b6b", fontSize: 16 }}>योजना नहीं मिली।</Text>
       </View>
     );
 
   return (
-    <ScrollView style={{ flex: 1, padding: 20 }}>
-      <Text style={{ fontSize: 26, fontWeight: "bold" }}>{scheme.title}</Text>
+    <ScrollView
+      style={{
+        flex: 1,
+        padding: 20,
+        backgroundColor: "#fdf8e8",
+      }}
+    >
+      {/* Title */}
+      <Text
+        style={{
+          fontSize: 28,
+          fontWeight: "800",
+          color: "#4a3b15",
+          marginBottom: 10,
+        }}
+      >
+        {scheme.title}
+      </Text>
 
-      <Text style={{ marginTop: 10, fontSize: 16, lineHeight: 22 }}>
+      {/* Description */}
+      <Text
+        style={{
+          marginTop: 10,
+          fontSize: 16,
+          lineHeight: 24,
+          color: "#5c4a1d",
+        }}
+      >
         {scheme.description}
       </Text>
 
+      {/* Benefits */}
       {scheme.benefits && (
-        <>
-          <Text style={{ marginTop: 20, fontSize: 18, fontWeight: "700" }}>
-            Benefits:
+        <View style={{ marginTop: 25 }}>
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: "700",
+              color: "#3b2f0b",
+              marginBottom: 8,
+            }}
+          >
+            लाभ (Benefits):
           </Text>
-          <Text style={{ marginTop: 6, fontSize: 16, lineHeight: 22 }}>
+          <Text
+            style={{
+              fontSize: 16,
+              color: "#5c4a1d",
+              lineHeight: 24,
+            }}
+          >
             {scheme.benefits}
           </Text>
-        </>
+        </View>
       )}
 
+      {/* Eligibility */}
       {scheme.eligibility && (
-        <>
-          <Text style={{ marginTop: 20, fontSize: 18, fontWeight: "700" }}>
-            Eligibility:
+        <View style={{ marginTop: 25 }}>
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: "700",
+              color: "#3b2f0b",
+              marginBottom: 8,
+            }}
+          >
+            पात्रता (Eligibility):
           </Text>
-          <Text style={{ marginTop: 6, fontSize: 16, lineHeight: 22 }}>
+          <Text
+            style={{
+              fontSize: 16,
+              color: "#5c4a1d",
+              lineHeight: 24,
+            }}
+          >
             {scheme.eligibility}
           </Text>
-        </>
+        </View>
       )}
 
+      {/* Apply Link */}
       {scheme.apply_link && (
         <Text
           style={{
-            marginTop: 20,
-            fontSize: 16,
-            color: "#2563eb",
+            marginTop: 30,
+            fontSize: 17,
+            fontWeight: "600",
+            color: "#6B8E23",
             textDecorationLine: "underline",
           }}
           onPress={() => Linking.openURL(scheme.apply_link)}
         >
-          Apply Online →
+          ऑनलाइन आवेदन करें →
         </Text>
       )}
     </ScrollView>

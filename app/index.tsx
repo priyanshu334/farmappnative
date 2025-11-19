@@ -1,75 +1,114 @@
+import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import { Image, Text, TouchableOpacity } from "react-native";
 
 export default function AuthLanding() {
   const router = useRouter();
 
   return (
-    <View
+    <LinearGradient
+      colors={["#fdf8e4", "#fff"]}
       style={{
         flex: 1,
-        backgroundColor: "#fff",
         alignItems: "center",
         justifyContent: "center",
-        paddingHorizontal: 20,
+        paddingHorizontal: 24,
       }}
     >
-      {/* 🔵 Top Image Section */}
+      {/* 🌾 Farmer Image */}
       <Image
         source={{
-          uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRij8uW1QkI0--AFjWFQzDY4jvNcbRjwaJxcg&s",
+          uri: "https://cdn.pixabay.com/photo/2017/01/06/23/07/farmer-1951287_640.jpg",
         }}
         style={{
           width: "100%",
-          height: 400,
-          borderRadius: 16,
-          marginBottom: 40,
+          height: 330,
+          borderRadius: 20,
+          marginBottom: 30,
+          shadowColor: "#000",
+          shadowOpacity: 0.15,
+          shadowRadius: 10,
         }}
         resizeMode="cover"
       />
 
-      {/* 🔵 Heading */}
+      {/* 🌾 Heading */}
       <Text
         style={{
-          fontSize: 28,
-          fontWeight: "700",
-          marginBottom: 20,
+          fontSize: 30,
+          fontWeight: "800",
+          marginBottom: 10,
           textAlign: "center",
+          color: "#3b2f0b",
         }}
       >
-        Welcome to Your App
+        किसान साथी App में आपका स्वागत है
       </Text>
 
-      {/* 🔵 Login Button */}
+      {/* Subtitle */}
+      <Text
+        style={{
+          fontSize: 16,
+          textAlign: "center",
+          color: "#5c4a1d",
+          marginBottom: 40,
+        }}
+      >
+        खेती, मौसम, शिक्षा और सहूलियत – सब एक जगह
+      </Text>
+
+      {/* 🔶 Login Button */}
       <TouchableOpacity
         style={{
           width: "100%",
-          backgroundColor: "#4a90e2",
-          paddingVertical: 14,
-          borderRadius: 10,
-          marginBottom: 12,
+          backgroundColor: "#8B5E34",
+          paddingVertical: 15,
+          borderRadius: 12,
+          marginBottom: 16,
+          shadowColor: "#8B5E34",
+          shadowOpacity: 0.3,
+          shadowRadius: 8,
+          elevation: 6,
         }}
         onPress={() => router.push("/login")}
       >
-        <Text style={{ color: "white", textAlign: "center", fontSize: 18 }}>
-          Login
+        <Text
+          style={{
+            color: "#fffdf4",
+            textAlign: "center",
+            fontSize: 18,
+            fontWeight: "600",
+          }}
+        >
+          लॉगिन करें
         </Text>
       </TouchableOpacity>
 
-      {/* 🔵 Signup Button */}
+      {/* 🌿 Signup Button */}
       <TouchableOpacity
         style={{
           width: "100%",
-          backgroundColor: "#50c878",
-          paddingVertical: 14,
-          borderRadius: 10,
+          backgroundColor: "#6B8E23",
+          paddingVertical: 15,
+          borderRadius: 12,
+          shadowColor: "#6B8E23",
+          shadowOpacity: 0.3,
+          shadowRadius: 8,
+          elevation: 6,
         }}
         onPress={() => router.push("/signup")}
       >
-        <Text style={{ color: "white", textAlign: "center", fontSize: 18 }}>
-          Signup
+        <Text
+          style={{
+            color: "#fffdf4",
+            textAlign: "center",
+            fontSize: 18,
+            fontWeight: "600",
+          }}
+        >
+          नया खाता बनाएं
         </Text>
       </TouchableOpacity>
-    </View>
+    </LinearGradient>
   );
 }
