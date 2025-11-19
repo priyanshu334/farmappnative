@@ -1,98 +1,151 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { Href, router } from "expo-router";
+import {
+  BarChart2,
+  BookOpen,
+  Bot,
+  CloudSun,
+  Landmark,
+} from "lucide-react-native";
+import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
-
-export default function HomeScreen() {
+export default function Home() {
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+    <ScrollView
+      style={{ flex: 1, padding: 20 }}
+      contentContainerStyle={{ paddingBottom: 40 }}
+    >
+      {/* Header */}
+      <Text style={{ fontSize: 28, fontWeight: "bold", marginBottom: 10 }}>
+        👨‍🌾 Welcome Farmer
+      </Text>
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+      <Text style={{ fontSize: 16, color: "gray", marginBottom: 25 }}>
+        Smart tools for better farming decisions 🌱
+      </Text>
+
+      {/* Banner */}
+      <View
+        style={{
+          backgroundColor: "#e6f4ff",
+          borderRadius: 18,
+          padding: 20,
+          marginBottom: 25,
+          flexDirection: "row",
+          alignItems: "center",
+        }}
+      >
+        <View style={{ flex: 1 }}>
+          <Text style={{ fontSize: 20, fontWeight: "600", marginBottom: 6 }}>
+            Smart Crop Guide
+          </Text>
+          <Text style={{ color: "#555" }}>
+            Get AI-recommended crops based on your soil & land.
+          </Text>
+
+          <TouchableOpacity
+            onPress={() => router.push("/crop-recommendation")}
+            style={{
+              marginTop: 12,
+              backgroundColor: "#2563eb",
+              paddingVertical: 10,
+              paddingHorizontal: 18,
+              borderRadius: 8,
+              alignSelf: "flex-start",
+            }}
+          >
+            <Text style={{ color: "white" }}>Try Now</Text>
+          </TouchableOpacity>
+        </View>
+
+        <Image
+          source={require("../../assets/splash.jpeg")}
+          style={{ width: 80, height: 80, marginLeft: 10 }}
+          resizeMode="contain"
+        />
+      </View>
+
+      {/* Feature Cards */}
+      <View style={{ gap: 15 }}>
+        {/* Market Prices */}
+        <TouchableOpacity
+          onPress={() => router.push("/(tabs)/market-prices")}
+          style={{
+            padding: 20,
+            backgroundColor: "white",
+            borderRadius: 14,
+            elevation: 3,
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <BarChart2 size={28} color="#2563eb" />
+          <Text style={{ fontSize: 18, marginLeft: 15 }}>Market Prices</Text>
+        </TouchableOpacity>
+
+        {/* Government Schemes */}
+        <TouchableOpacity
+          onPress={() => router.push("/(tabs)/schemes")}
+          style={{
+            padding: 20,
+            backgroundColor: "white",
+            borderRadius: 14,
+            elevation: 3,
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <Landmark size={28} color="#16a34a" />
+          <Text style={{ fontSize: 18, marginLeft: 15 }}>Govt. Schemes</Text>
+        </TouchableOpacity>
+
+        {/* Farm Records */}
+        <TouchableOpacity
+          onPress={() => router.push("/(tabs)/farm-records")}
+          style={{
+            padding: 20,
+            backgroundColor: "white",
+            borderRadius: 14,
+            elevation: 3,
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <BookOpen size={28} color="#d97706" />
+          <Text style={{ fontSize: 18, marginLeft: 15 }}>Farm Records</Text>
+        </TouchableOpacity>
+
+        {/* AI Farming Assistant */}
+        <TouchableOpacity
+          onPress={() => router.push("/(tabs)/ai" as Href)}
+          style={{
+            padding: 20,
+            backgroundColor: "white",
+            borderRadius: 14,
+            elevation: 3,
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <Bot size={28} color="#8b5cf6" />
+          <Text style={{ fontSize: 18, marginLeft: 15 }}>AI Assistant</Text>
+        </TouchableOpacity>
+
+        {/* Weather Forecast */}
+        <TouchableOpacity
+          onPress={() => router.push("/scheme-details")}
+          style={{
+            padding: 20,
+            backgroundColor: "white",
+            borderRadius: 14,
+            elevation: 3,
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <CloudSun size={28} color="#0891b2" />
+          <Text style={{ fontSize: 18, marginLeft: 15 }}>Weather Forecast</Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
