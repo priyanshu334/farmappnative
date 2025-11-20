@@ -343,7 +343,38 @@ export default function Home() {
             </Text>
           </TouchableOpacity>
         </View>
+        {/* Customer Support Button */}
       </ScrollView>
+
+      {/* Floating Customer Support Button */}
+      <TouchableOpacity
+        onPress={() => router.push("/customer_support")}
+        activeOpacity={0.8}
+        style={{
+          position: "absolute",
+          bottom: 30,
+          right: 20,
+          backgroundColor: "#ffd700",
+          paddingVertical: 12,
+          paddingHorizontal: 16,
+          borderRadius: 30,
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 3 },
+          shadowOpacity: 0.2,
+          shadowRadius: 6,
+          elevation: 5,
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 14,
+            fontWeight: "700",
+            color: "#4a3b15",
+          }}
+        >
+          💬 सहायता
+        </Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }

@@ -45,58 +45,50 @@ export default function Login() {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1, backgroundColor: "#f8fafc" }}
+      style={{ flex: 1, backgroundColor: "#F3F7ED" }}
     >
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1 }}
-        keyboardShouldPersistTaps="handled"
-      >
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View
           style={{
             flex: 1,
-            padding: 24,
+            padding: 22,
             justifyContent: "center",
-            maxWidth: 440,
+            maxWidth: 420,
             width: "100%",
             alignSelf: "center",
           }}
         >
-          {/* Logo & Title Section */}
-          <View style={{ alignItems: "center", marginBottom: 48 }}>
+          {/* Logo & Title */}
+          <View style={{ alignItems: "center", marginBottom: 40 }}>
             <View
               style={{
                 width: 80,
                 height: 80,
                 borderRadius: 40,
-                backgroundColor: "#2563eb",
+                backgroundColor: "#3B7D2A",
                 alignItems: "center",
                 justifyContent: "center",
-                marginBottom: 20,
-                shadowColor: "#2563eb",
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.3,
-                shadowRadius: 8,
-                elevation: 8,
+                marginBottom: 16,
               }}
             >
-              <Sprout size={40} color="#ffffff" strokeWidth={2.5} />
+              {" "}
+              <Sprout size={38} color="#ffffff" strokeWidth={2.5} />{" "}
             </View>
-
+            ```
             <Text
               style={{
-                fontSize: 32,
-                fontWeight: "bold",
-                color: "#0f172a",
-                marginBottom: 8,
+                fontSize: 28,
+                fontWeight: "700",
+                color: "#1B3C1A",
+                marginBottom: 6,
               }}
             >
               Welcome Back
             </Text>
-
             <Text
               style={{
-                fontSize: 16,
-                color: "#64748b",
+                fontSize: 15,
+                color: "#4A6040",
                 textAlign: "center",
               }}
             >
@@ -104,16 +96,16 @@ export default function Login() {
             </Text>
           </View>
 
-          {/* Form Section */}
+          {/* Form */}
           <View style={{ gap: 16 }}>
-            {/* Email Input */}
+            {/* Email */}
             <View>
               <Text
                 style={{
                   fontSize: 14,
                   fontWeight: "600",
-                  color: "#334155",
-                  marginBottom: 8,
+                  color: "#355734",
+                  marginBottom: 6,
                 }}
               >
                 Email Address
@@ -122,14 +114,14 @@ export default function Login() {
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
-                  borderWidth: 2,
-                  borderColor: "#e2e8f0",
-                  borderRadius: 12,
+                  borderWidth: 1,
+                  borderColor: "#C2D3B4",
+                  borderRadius: 10,
                   backgroundColor: "#ffffff",
-                  paddingHorizontal: 16,
+                  paddingHorizontal: 14,
                 }}
               >
-                <Mail size={20} color="#94a3b8" />
+                <Mail size={20} color="#89A37D" />
                 <TextInput
                   placeholder="your.email@example.com"
                   value={email}
@@ -139,22 +131,22 @@ export default function Login() {
                   autoComplete="email"
                   style={{
                     flex: 1,
-                    padding: 16,
-                    fontSize: 16,
-                    color: "#0f172a",
+                    paddingVertical: 14,
+                    fontSize: 15,
+                    color: "#1B3C1A",
                   }}
                 />
               </View>
             </View>
 
-            {/* Password Input */}
+            {/* Password */}
             <View>
               <Text
                 style={{
                   fontSize: 14,
                   fontWeight: "600",
-                  color: "#334155",
-                  marginBottom: 8,
+                  color: "#355734",
+                  marginBottom: 6,
                 }}
               >
                 Password
@@ -163,14 +155,14 @@ export default function Login() {
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
-                  borderWidth: 2,
-                  borderColor: "#e2e8f0",
-                  borderRadius: 12,
+                  borderWidth: 1,
+                  borderColor: "#C2D3B4",
+                  borderRadius: 10,
                   backgroundColor: "#ffffff",
-                  paddingHorizontal: 16,
+                  paddingHorizontal: 14,
                 }}
               >
-                <Lock size={20} color="#94a3b8" />
+                <Lock size={20} color="#89A37D" />
                 <TextInput
                   placeholder="Enter your password"
                   value={password}
@@ -179,32 +171,28 @@ export default function Login() {
                   autoComplete="password"
                   style={{
                     flex: 1,
-                    padding: 16,
-                    fontSize: 16,
-                    color: "#0f172a",
+                    paddingVertical: 14,
+                    fontSize: 15,
+                    color: "#1B3C1A",
                   }}
                 />
                 <TouchableOpacity
                   onPress={() => setShowPassword(!showPassword)}
-                  hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                 >
                   {showPassword ? (
-                    <EyeOff size={20} color="#94a3b8" />
+                    <EyeOff size={20} color="#89A37D" />
                   ) : (
-                    <Eye size={20} color="#94a3b8" />
+                    <Eye size={20} color="#89A37D" />
                   )}
                 </TouchableOpacity>
               </View>
             </View>
 
             {/* Forgot Password */}
-            <TouchableOpacity
-              style={{ alignSelf: "flex-end" }}
-              activeOpacity={0.7}
-            >
+            <TouchableOpacity style={{ alignSelf: "flex-end" }}>
               <Text
                 style={{
-                  color: "#2563eb",
+                  color: "#3B7D2A",
                   fontSize: 14,
                   fontWeight: "600",
                 }}
@@ -217,18 +205,12 @@ export default function Login() {
             <TouchableOpacity
               onPress={login}
               disabled={isLoading}
-              activeOpacity={0.8}
               style={{
-                backgroundColor: isLoading ? "#94a3b8" : "#2563eb",
-                padding: 18,
-                borderRadius: 12,
+                backgroundColor: isLoading ? "#8CA380" : "#3B7D2A",
+                padding: 15,
+                borderRadius: 10,
                 alignItems: "center",
-                marginTop: 8,
-                shadowColor: "#2563eb",
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.3,
-                shadowRadius: 8,
-                elevation: 4,
+                marginTop: 4,
               }}
             >
               {isLoading ? (
@@ -252,20 +234,19 @@ export default function Login() {
             style={{
               flexDirection: "row",
               justifyContent: "center",
-              marginTop: 32,
+              marginTop: 26,
               gap: 4,
             }}
           >
-            <Text style={{ color: "#64748b", fontSize: 14 }}>
+            <Text style={{ color: "#4A6040", fontSize: 14 }}>
               Dont have an account?
             </Text>
             <TouchableOpacity
-              activeOpacity={0.7}
               onPress={() => router.push("/(auth)/signup" as Href)}
             >
               <Text
                 style={{
-                  color: "#2563eb",
+                  color: "#3B7D2A",
                   fontSize: 14,
                   fontWeight: "600",
                 }}

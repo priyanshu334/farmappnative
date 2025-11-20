@@ -18,11 +18,11 @@ export default function AuthLanding() {
       {/* 🌾 Farmer Image */}
       <Image
         source={{
-          uri: "https://cdn.pixabay.com/photo/2017/01/06/23/07/farmer-1951287_640.jpg",
+          uri: "https://i.pinimg.com/736x/61/30/97/6130977243329f9ad2c1e31422043f15.jpg",
         }}
         style={{
-          width: "100%",
-          height: 330,
+          width: "60%",
+          height: 230,
           borderRadius: 20,
           marginBottom: 30,
           shadowColor: "#000",
@@ -70,7 +70,7 @@ export default function AuthLanding() {
           shadowRadius: 8,
           elevation: 6,
         }}
-        onPress={() => router.push("/login")}
+        onPress={() => router.push("/login_with_otp")}
       >
         <Text
           style={{
